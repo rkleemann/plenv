@@ -1,0 +1,20 @@
+Source: plenv
+Section: universe/perl
+Priority: extra
+Maintainer: Gautam Dey <gautam.dey77@gmail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: http://github.com/tokuhirom/plenv
+Vcs-Git: git://github.com/tokuhirom/plenv.git
+Vcs-Browser: http://github.com/tokuhirom/plenv
+
+Package: plenv
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: plenv - perl binary manager
+ Use plenv to pick a Perl version for your application and guarantee 
+ that your development environment matches production. Put plenv to
+ work with Carton for painless Perl upgrades and bulletproof 
+ deployments.
+ . 
+ 
