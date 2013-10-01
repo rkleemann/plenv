@@ -17,7 +17,9 @@ list-targets:
 
 build-deb-package:
 	@echo "Building $(PACKAGE_NAME)_$(VERSION).orig.tar.gz"
-	tar -zcvf ../$(PACKAGE_NAME)_$(VERSION).orig.tar.gz --exclude=.git --exclude='.*.swp' .
+	@echo "Clear out tools dir"
+	rm -rf debian/tools/plenv-perl*
+	tar -zcvf ../$(PACKAGE_NAME)_$(VERSION).orig.tar.gz --exclude=.git --exclude='.*.swp' --exclude=debian .
 	debuild -us -uc
 
 /opt/plenv/plugins/perl-build:
