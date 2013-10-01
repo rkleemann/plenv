@@ -1,5 +1,8 @@
+PACKAGE_NAME := $(shell cat debian/control | grep 'Package:' | cut -d ':' -f 2 | tr -d ' ' )
+VERSION := $(shell cat debian/changelog | grep $(PACKAGE_NAME) | head -n 1 | perl -pe '/\(([0-9.-]+)-\d+\)/; $$_=$$1')
+
 build:
-	echo "Nothing to build."
+	@echo "Nothing to build. $(PACKAGE_NAME) -- $(VERSION) "
 
 install: 
 	echo "Installing to ${DESTDIR}"
@@ -11,10 +14,10 @@ list-targets-dummy: ;#No opt
 list-targets:
 	make -rqp list-targets-dummy | grep -v '^# ' | grep -v '^[[:space:]]' | grep --only-matching '^.*:' | grep -v '\.' | grep -v '%' | grep -v 'list-targets-dummy' | egrep --color '^[^ ]*:'
 
+
 build-deb-package:
-	PACKAGE_NAME=$( grep 'Package:' debian/control | cut -d ':' -f 2 | tr -d ' ' )
-	VERSION=$(grep $PACKAGE_NAME debian/changelog | head -n 1 | perl -pE '/\(([0-9.-]+)-\d+\)/; $_=$1')
-	tar -zcvf ../${PACKAGE_NAME}_${VERSION}.orig.tar.gz --exclude=.git --exclude='.*.swp' .
+	@echo "Building $(PACKAGE_NAME)_$(VERSION).orig.tar.gz"
+	tar -zcvf ../$(PACKAGE_NAME)_$(VERSION).orig.tar.gz --exclude=.git --exclude='.*.swp' .
 	debuild -us -uc
 
 /opt/plenv/plugins/perl-build:
