@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash  
 
 VERSION=$1
 PACKAGE_NAME="plenv-perl-${VERSION}"
@@ -148,15 +148,15 @@ build:
 	echo "Nothing to build."
 
 install: 
-	echo "Installing to ${DESTDIR}"
-	mkdir -p ${DESTDIR}/opt/plenv/versions
-	rsync -aH /opt/plenv/versions/${VERSION}/ ${DESTDIR}/opt/plenv/versions/${VERSION}/
+	echo "Installing to \${DESTDIR}"
+	mkdir -p \${DESTDIR}/opt/plenv/versions
+	rsync -aH /opt/plenv/versions/${VERSION}/ \${DESTDIR}/opt/plenv/versions/${VERSION}/
 MAKEFILE
 
 }
 
 function create-dummy-source(){
-   tar -zcvf ${PACKAGE_NAME}_${VERSION}.orig.tar.gz --exclude=.git --exclude='.*.swp' ${PACKAGE_DIR}/..
+   tar -zcvf ${PACKAGE_NAME}_${VERSION}.orig.tar.gz --exclude=.git --exclude='.*.swp' --exclude='debian' ${PACKAGE_DIR}
 }
 
 function create-debian-package(){
