@@ -1,2 +1,4 @@
 plenv
 plenv.debhelper.log
+files
+plenv.substvars
