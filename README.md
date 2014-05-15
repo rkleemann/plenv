@@ -191,6 +191,7 @@ hood.
 
     * Perl 5.8.1+
     * bash
+    * curl(If you want to use plenv install-cpanm)
 
 ## Command Reference
 
@@ -328,7 +329,19 @@ Lists all perl versions with the given command installed.
 
         % plenv migrate-modules 5.8.2 5.16.2
 
-    It make a list of installed modules in 5.8.2, and install these modules to 5.16.2 environment.
+    It make a list of installed modules in 5.8.2, and install the newest versions of these modules
+    to 5.16.2 environment. Note that because the module version won't necessarily be the same between
+    the two versions, there maybe changes that affect compatibility, dependencies or other behaviors
+    your applications depend on.
+
+    You can reuse installed modules from a binary-compatible perl version
+    directly without reinstalling. For example, if you have installed lots of
+    modules in 5.18.1 and install a variant of 5.18.1 with dtrace support,
+    you might not want to migrate all those modules.
+
+        % plenv install 5.18.1 -Dusedtrace --as 5.18.1-dtrace
+        % plenv shell 5.18.1-dtrace
+        % PERL5LIB=$(PLENV_VERSION=5.18.1 perl -e'print join ":",@INC') perl <command>
 
 - How can I enable -g option without slowing down binary?
 
