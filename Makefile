@@ -1,3 +1,10 @@
+DUMMY_VERSION = $(PWD)/versions/dummy
+
+PLENV_ROOT := $(PWD)
+PATH := $(PWD)/bin:$(PATH)
+SHELL := /bin/bash
+export PLENV_ROOT PATH SHELL
+
 PACKAGE_NAME := $(shell cat debian/control | grep 'Package:' | cut -d ':' -f 2 | tr -d ' ' )
 VERSION := $(shell cat debian/changelog | grep $(PACKAGE_NAME) | head -n 1 | perl -pe '/\(([0-9.-]+)-\d+\)/; $$_=$$1')
 
@@ -28,17 +35,10 @@ build-deb-package:
 
 install-perl-build: /opt/plenv/plugins/perl-build
 
-DUMMY_VERSION = $(PWD)/versions/dummy
-
-PLENV_ROOT := $(PWD)
-PATH := $(PLENV_ROOT)/bin:$(PATH)
-SHELL := /bin/bash
-export PLENV_ROOT PATH SHELL
-
 copy-from-rbenv:
 	bash ./author/copy-from-rbenv.sh
 
-test: ext/test-simple-bash shims/perl _force
+run_test: ext/test-simple-bash shims/perl _force
 	( eval "$$(plenv init -)"; eval prove -v test/ )
 
 ext/test-simple-bash:
