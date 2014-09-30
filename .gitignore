@@ -12,3 +12,5 @@ tags
 /versions/
 /cache/
 /build
+/libs/
+/ext/
