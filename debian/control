@@ -1,7 +1,7 @@
 Source: plenv
 Section: universe/perl
 Priority: extra
-Maintainer: Gautam Dey <gautam.dey77@gmail.com>
+Maintainer: Bob Kleemann <bob.kleemann@tealium.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.2
 Homepage: http://github.com/tokuhirom/plenv

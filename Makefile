@@ -15,7 +15,7 @@ install:
 	echo "Installing to ${DESTDIR}"
 	mkdir -p ${DESTDIR}/etc/profile.d/../../opt/plenv
 	rsync -a bash-profile/ ${DESTDIR}/etc/profile.d/
-	rsync -a bin libexec plenv.d completions ${DESTDIR}/opt/plenv
+	rsync -a bin completions libexec plenv.d ${DESTDIR}/opt/plenv
 
 list-targets-dummy: ;#No opt
 list-targets:
@@ -30,8 +30,8 @@ build-deb-package:
 	debuild -us -uc
 
 /opt/plenv/plugins/perl-build:
-	sudo git clone git://github.com/tokuhirom/Perl-Build.git /opt/plenv/plugins/perl-build
-	sudo sh -l -c 'plenv rehash'	
+	git clone git://github.com/tokuhirom/Perl-Build.git /opt/plenv/plugins/perl-build
+	sh -l -c 'plenv rehash'
 
 install-perl-build: /opt/plenv/plugins/perl-build
 
