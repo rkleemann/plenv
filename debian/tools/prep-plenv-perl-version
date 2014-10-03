@@ -1,43 +1,43 @@
-#!/bin/bash 
+#! /bin/bash -x
 
 
 VERSION=$1
-CPAN_MODULES="Readonly Readonly::XS Moose JSON::XS Log::Log4perl File::Slurp Carton"
+CPAN_MODULES="Readonly Moose JSON::XS Log::Log4perl File::Slurp Carton"
 
 function available-versions(){
-   plenv versions | perl -nale 'print $F[0] eq q(*) ? $F[1] : $F[0]' | grep -v 'system'
+    plenv versions | perl -nale 'print $F[0] eq q(*) ? $F[1] : $F[0]'
 }
 
 function available_installable_versions(){
-  plenv install --list | tail -n +2 | grep -v $(available-versions)
+    plenv install --list | tail -n +2 | grep -v "$(available-versions)"
 }
 
 
 
 if [ -z "$VERSION" ]; then 
-  echo "Please select an installable version:"
-  available_installable_versions
-  exit 1
+    echo "Please select an installable version:"
+    available_installable_versions
+    exit 1
 fi
 
 available_installable_versions | grep "$VERSION" > /dev/null
 if [ 0 != $? ]; then
-  available-versions | grep "$VERSION" > /dev/null
-  if [ 0 == $? ] ; then 
-     echo "Version ($VERSION) is already installed."
-     exit 3
-  else
-     echo "Unknown Version ($VERSION)."
-     echo "Please select an installable version:"
-     available_installable_versions
-     exit 2
-  fi
+    available-versions | grep "$VERSION" > /dev/null
+    if [ 0 == $? ] ; then 
+        echo "Version ($VERSION) is already installed."
+        exit 3
+    else
+        echo "Unknown Version ($VERSION)."
+        echo "Please select an installable version:"
+        available_installable_versions
+        exit 2
+    fi
 fi
 
 sudo $SHELL -x -l -c "
 set -e
-plenv install $VERSION
-plenv local $VERSION
+plenv install $VERSION "$@"
+plenv shell $VERSION
 plenv install-cpanm
 plenv exec cpanm $CPAN_MODULES
 "

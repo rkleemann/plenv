@@ -1,0 +1,41 @@
+
+prep-plenv-perl-version
+-----------------------
+
+Used to compile a version of Perl for plenv.  This script can only compile
+with default options, as it does not have any concept of command line options.
+
+    ./prep-plenv-perl-version <version>
+
+If special compilation options are needed, do it by hand:
+
+    sudo -i
+    plenv install <version> --as=<version-name> <build-options>
+    plenv shell <version-name>
+    plenv install-cpanm
+    plenv exec cpanm Readonly Moose JSON::XS Log::Log4perl File::Slurp Carton
+    exit
+
+We've done this with version=5.18.2, version-name=5.18.2-threads,
+build-options=-Dusethreads.
+
+create-plenv-perl-package
+-------------------------
+
+Used to package a version of Perl for plenv.  This cannot be run in the
+~vagrant/sources/plenv directory, as it needs to make symlinks, so run it
+from a different directory:
+
+    cd ~
+    mkdir plenv
+    cd plenv
+    ln -s ../sources/plenv/* .
+    ./debian/tools/create-plenv-perl-package <version>
+
+This script does not understand anything but straight versions, so if
+packaging a specially named version (like 5.18.2-threads), run the script,
+then rename the appropriate .orig.tar.gz file, then run the script again:
+
+    ./debian/tools/create-plenv-perl-package <version-name>
+    mv plenv-perl-<version-name>_{<version-name>,<version>}.orig.tar.gz
+    ./debian/tools/create-plenv-perl-package <version-name>

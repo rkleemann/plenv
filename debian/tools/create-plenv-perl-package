@@ -1,31 +1,32 @@
-#!/bin/bash  
+#! /bin/bash
 
 VERSION=$1
+MAINTAINER_FULL="Bob Kleemann <bob.kleemann@tealium>"
 PACKAGE_NAME="plenv-perl-${VERSION}"
-MAINTAINER_FULL="Gautam Dey <gautam.dey77@gmail.com>"
-PACKAGE_DIR="package-${VERSION}"
+PACKAGE_DIR="plenv-perl-${VERSION}"
 DEBIAN_DIR="${PACKAGE_DIR}/debian"
 DATETIME=$(date -R)
 #MAINTAINER_FULL="Unknow <unknown@unknown.com>"
 
 function available-versions(){
-   plenv versions | perl -nale 'print $F[0] eq q(*) ? $F[1] : $F[0]' | grep -v 'system'
+    plenv versions | perl -nale 'print $F[0] eq q(*) ? $F[1] : $F[0]' | grep -v 'system'
 }
 
 function create-base-debian-dir() {
-   mkdir -p ${DEBIAN_DIR}/source
-   echo "8" > ${DEBIAN_DIR}/compat
-   touch ${DEBIAN_DIR}/docs
-   echo "3.0 (quilt)" > ${DEBIAN_DIR}/source/format
+    mkdir -p ${DEBIAN_DIR}/source
+    echo "8" > ${DEBIAN_DIR}/compat
+    touch ${DEBIAN_DIR}/docs
+    echo "3.0 (quilt)" > ${DEBIAN_DIR}/source/format
 
-   cat <<CHANGELOG > ${DEBIAN_DIR}/changelog
+    cat <<CHANGELOG > ${DEBIAN_DIR}/changelog
 ${PACKAGE_NAME} (${VERSION}) unstable; urgency=low
 
-  * Initial release 
+  * Initial release of ${PACKAGE_NAME}
 
  -- ${MAINTAINER_FULL}  ${DATETIME}
 CHANGELOG
-   cat <<CONTROL > ${DEBIAN_DIR}/control
+
+    cat <<CONTROL > ${DEBIAN_DIR}/control
 Source: ${PACKAGE_NAME}
 Section: universe/perl
 Priority: extra
@@ -40,7 +41,7 @@ Package: ${PACKAGE_NAME}
 Architecture: any
 Depends: \${shlibs:Depends}, \${misc:Depends}, plenv
 Description: Perl ${VERSION} binary for the plenv binary manager
- This is version ${VERSION} of perl. Perl is a scripting language used in
+ This is version ${VERSION} of Perl. Perl is a scripting language used in
  many system scripts and utilities. This version is installed and managed
  seprately from your system perl.
  . 
@@ -82,6 +83,7 @@ License: GPL-1+
   /usr/share/common-licenses/GPL-1
 
 COPYRIGHT
+
 cat <<'POSTINSTALL' > ${DEBIAN_DIR}/postinst
 #!/bin/sh
 # postinst script for plenv
@@ -124,6 +126,7 @@ esac
 
 exit 0
 POSTINSTALL
+
 cat <<'RULES' > ${DEBIAN_DIR}/rules
 #!/usr/bin/make -f
 # -*- makefile -*-
@@ -140,7 +143,9 @@ export DH_VERBOSE=1
 	dh $@ 
 RULES
 chmod +x ${DEBIAN_DIR}/rules
+
 }
+
 function create-makefile() {
 
 cat<<MAKEFILE > ${PACKAGE_DIR}/Makefile
@@ -156,35 +161,34 @@ MAKEFILE
 }
 
 function create-dummy-source(){
-   tar -zcvf ${PACKAGE_NAME}_${VERSION}.orig.tar.gz --exclude=.git --exclude='.*.swp' --exclude='debian' ${PACKAGE_DIR}
+    tar -zcvf ${PACKAGE_NAME}_${VERSION}.orig.tar.gz --exclude=.git --exclude='.*.swp' --exclude='debian' ${PACKAGE_DIR}
 }
 
 function create-debian-package(){
-   create-base-debian-dir
-   create-makefile
-   create-dummy-source
-   pushd ${PACKAGE_DIR}
-   debuild --no-lintian --no-tgz-check -us -uc
-   popd
+    create-base-debian-dir
+    create-makefile
+    create-dummy-source
+    pushd ${PACKAGE_DIR}
+    debuild --no-lintian --no-tgz-check -us -uc
+    popd
 }
 
 if [ -r config.sh ]; then
-source config.sh
+    source config.sh
 fi
 
 if [ ! -n "${VERSION}" ] ; then
-   echo "Version is required. Available versions are:"
-   available-versions
-   exit 1 
+    echo "Version is required. Available versions are:"
+    available-versions
+    exit 1 
 fi
 
 available-versions | grep ${VERSION} >/dev/null
 if [ $? != 0 ]; then
-   echo "Version (${VERSION}) is not supported. Availabel versions are:"
-   available-versions
-   exit 2
+    echo "Version (${VERSION}) is not supported. Available versions are:"
+    available-versions
+    exit 2
 fi
 
 create-debian-package
-
 
